@@ -1,0 +1,39 @@
+server:
+  #项目端口号
+  port: 8066
+  servlet:
+    context-path: /Jmccms # 项目访问路径
+  tomcat:
+    max-connections: 200
+    max-http-form-post-size: 0
+    max-threads: 300
+    min-spare-threads: 0
+    uri-encoding: UTF-8
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jbpm?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+  #集中解决各种编码问题
+  banner:
+    charset: UTF-8
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  #     spring mvc 视图解析器
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+  # 时间格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 时区设置
+    time-zone: GMT+8
