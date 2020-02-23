@@ -2,13 +2,12 @@ spring:
     datasource:  
       jbpm: 
         name: jbpm
-        jdbc-url: jdbc:oracle:thin:@localhost:hnkyyy
-        username: username
-        password: password
+        jdbc-url: jdbc:mysql://localhost:3306/jbpm
+        username: root
+        password: 123456
         # 使用druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
-        filters: stat
         maxActive: 20
         initialSize: 1
         maxWait: 60000

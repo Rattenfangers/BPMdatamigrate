@@ -9,11 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  
 import javax.sql.DataSource;
- 
  
 /**
  * @program: game_api
@@ -24,34 +22,29 @@ import javax.sql.DataSource;
  **/
 @Configuration
 // 扫描 Mapper 接口并容器管理
-@MapperScan(basePackages = "com.xjzhou.jdbc.jbpm" ,sqlSessionFactoryRef = "jbpmSqlSessionFactory")
-public class JbpmDataSourceConfig {
+@MapperScan(basePackages = "com.xjzhou.jdbc.camunda", sqlSessionFactoryRef = "camundaSqlSessionFactory")
+public class CamundaDataSourceConfig {
  
-    @Bean(name = "jbpmDataSource")
-    @ConfigurationProperties(prefix="spring.datasource.jbpm")
-    @Primary
-    public DataSource jbpmDataSource() {
+    @Bean(name = "camundaDataSource")
+    @ConfigurationProperties(prefix="spring.datasource.camunda")
+    public DataSource camundaDataSource() {
         return DataSourceBuilder.create().build();
     }
  
-    @Bean(name = "jbpmTransactionManager")
-    @Primary
-    public DataSourceTransactionManager jbpmTransactionManager(@Qualifier("jbpmDataSource") DataSource jbpmDataSource) {
-        return new DataSourceTransactionManager(jbpmDataSource);
+    @Bean(name = "camundaTransactionManager")
+    public DataSourceTransactionManager camundaTransactionManager() {
+        return new DataSourceTransactionManager(camundaDataSource());
     }
  
-    @Bean(name = "jbpmSqlSessionFactory")
-    @Primary
-    public SqlSessionFactory jbpmSqlSessionFactory(@Qualifier("jbpmDataSource") DataSource jbpmDataSource)
+    @Bean(name = "camundaSqlSessionFactory")
+    public SqlSessionFactory camundaSqlSessionFactory(@Qualifier("camundaDataSource") DataSource camundaDataSource)
             throws Exception {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(jbpmDataSource);
+        sessionFactory.setDataSource(camundaDataSource);
         return sessionFactory.getObject();
     }
-    @Bean(name="jbpmSqlSessionTemplate")
-    @Primary
-    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier("jbpmSqlSessionFactory") SqlSessionFactory sqlSessionFactory){
+    @Bean(name="camundaSqlSessionTemplate")
+    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier("camundaSqlSessionFactory") SqlSessionFactory sqlSessionFactory){
         return new SqlSessionTemplate(sqlSessionFactory);
     }
- 
 }
