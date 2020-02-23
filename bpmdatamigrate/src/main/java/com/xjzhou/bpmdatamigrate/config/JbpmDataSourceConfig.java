@@ -1,4 +1,4 @@
-package com.xjzhou.jdbc;
+package com.xjzhou.bpmdatamigrate.config;
  
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -24,29 +24,29 @@ import javax.sql.DataSource;
  **/
 @Configuration
 // 扫描 Mapper 接口并容器管理
-@MapperScan(basePackages = MasterDataSourceConfig.PACKAGE, sqlSessionFactoryRef = "masterSqlSessionFactory")
-public class MasterDataSourceConfig {
+@MapperScan(basePackages = JbpmDataSourceConfig.PACKAGE, sqlSessionFactoryRef = "jbpmSqlSessionFactory")
+public class JbpmDataSourceConfig {
  
  
     // 精确到 master 目录，以便跟其他数据源隔离
-    static final String PACKAGE = "com.cjrh.game_api.dao.master";
+    static final String PACKAGE = "com.xjzhou.bpmdatamigrate.config";
     static final String MAPPER_LOCATION = "classpath:mapper/master/*.xml";
  
-    @Value("${master.datasource.url}")
+    @Value("${jbpm.datasource.url}")
     private String url;
  
-    @Value("${master.datasource.username}")
+    @Value("${jbpm.datasource.username}")
     private String user;
  
-    @Value("${master.datasource.password}")
+    @Value("${jbpm.datasource.password}")
     private String password;
  
-    @Value("${master.datasource.driver-class-name}")
+    @Value("${jbpm.datasource.driver-class-name}")
     private String driverClass;
  
-    @Bean(name = "masterDataSource")
+    @Bean(name = "jbpmDataSource")
     @Primary
-    public DataSource masterDataSource() {
+    public DataSource jbpmDataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(url);
@@ -55,20 +55,20 @@ public class MasterDataSourceConfig {
         return dataSource;
     }
  
-    @Bean(name = "masterTransactionManager")
+    @Bean(name = "jbpmTransactionManager")
     @Primary
-    public DataSourceTransactionManager masterTransactionManager() {
-        return new DataSourceTransactionManager(masterDataSource());
+    public DataSourceTransactionManager jbpmTransactionManager() {
+        return new DataSourceTransactionManager(jbpmDataSource());
     }
  
-    @Bean(name = "masterSqlSessionFactory")
+    @Bean(name = "jbpmSqlSessionFactory")
     @Primary
-    public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource)
+    public SqlSessionFactory masterSqlSessionFactory(@Qualifier("jbpmDataSource") DataSource jbpmDataSource)
             throws Exception {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(masterDataSource);
+        sessionFactory.setDataSource(jbpmDataSource);
         sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver()
-                .getResources(MasterDataSourceConfig.MAPPER_LOCATION));
+                .getResources(JbpmDataSourceConfig.MAPPER_LOCATION));
         return sessionFactory.getObject();
     }
  

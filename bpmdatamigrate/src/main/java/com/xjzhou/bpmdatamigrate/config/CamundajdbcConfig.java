@@ -1,4 +1,4 @@
-package com.xjzhou.jdbc.camunda;
+package com.xjzhou.bpmdatamigrate.config;
  
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -22,27 +22,27 @@ import javax.sql.DataSource;
  **/
 @Configuration
 // 扫描 Mapper 接口并容器管理
-@MapperScan(basePackages = CamundajdbcConfig.PACKAGE, sqlSessionFactoryRef = "secondSqlSessionFactory")
+@MapperScan(basePackages = CamundajdbcConfig.PACKAGE, sqlSessionFactoryRef = "camundaSqlSessionFactory")
 public class CamundajdbcConfig {
  
     // 精确到 cluster 目录，以便跟其他数据源隔离
-    static final String PACKAGE = "com.cjrh.game_api.dao.second";
+    static final String PACKAGE = "com.xjzhou.bpmdatamigrate.config";
     static final String MAPPER_LOCATION = "classpath:mapper/second/*.xml";
  
-    @Value("${second.datasource.url}")
+    @Value("${camunda.datasource.url}")
     private String url;
  
-    @Value("${second.datasource.username}")
+    @Value("${camunda.datasource.username}")
     private String user;
  
-    @Value("${second.datasource.password}")
+    @Value("${camunda.datasource.password}")
     private String password;
  
-    @Value("${second.datasource.driver-class-name}")
+    @Value("${camunda.datasource.driver-class-name}")
     private String driverClass;
  
-    @Bean(name = "secondDataSource")
-    public DataSource clusterDataSource() {
+    @Bean(name = "camundaDataSource")
+    public DataSource camundaDataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(url);
@@ -51,16 +51,16 @@ public class CamundajdbcConfig {
         return dataSource;
     }
  
-    @Bean(name = "secondTransactionManager")
-    public DataSourceTransactionManager clusterTransactionManager() {
-        return new DataSourceTransactionManager(clusterDataSource());
+    @Bean(name = "camundaTransactionManager")
+    public DataSourceTransactionManager camundaTransactionManager() {
+        return new DataSourceTransactionManager(camundaDataSource());
     }
  
-    @Bean(name = "secondSqlSessionFactory")
-    public SqlSessionFactory clusterSqlSessionFactory(@Qualifier("secondDataSource") DataSource clusterDataSource)
+    @Bean(name = "camundaSqlSessionFactory")
+    public SqlSessionFactory clusterSqlSessionFactory(@Qualifier("camundaDataSource") DataSource camundaDataSource)
             throws Exception {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(clusterDataSource);
+        sessionFactory.setDataSource(camundaDataSource);
         sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver()
                 .getResources(CamundajdbcConfig.MAPPER_LOCATION));
         return sessionFactory.getObject();
